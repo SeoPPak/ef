@@ -18,17 +18,28 @@ func init() {
 		return
 	}
 
+	initClient(apiKey)
+}
+
+func initClient(apiKey string) error {
 	var err error
 	geminiClient, err = genai.NewClient(context.Background(), option.WithAPIKey(apiKey))
 	if err != nil {
-		fmt.Printf("Failed to create Gemini client: %v\n", err)
-		return
+		return fmt.Errorf("failed to create Gemini client: %v", err)
 	}
+	return nil
 }
 
 func GetGeminiResponse(ctx context.Context, prompt string) (string, error) {
 	if geminiClient == nil {
-		return "", fmt.Errorf("Gemini client not initialized, please set GEMINI_API_KEY environment variable")
+		apiKey := os.Getenv("GEMINI_API_KEY")
+		if apiKey == "" {
+			return "", fmt.Errorf("Gemini client not initialized, please set GEMINI_API_KEY environment variable")
+		}
+		
+		if err := initClient(apiKey); err != nil {
+			return "", err
+		}
 	}
 
 	model := geminiClient.GenerativeModel("gemini-2.0-flash")
