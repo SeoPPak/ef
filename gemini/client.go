@@ -1,0 +1,50 @@
+package gemini
+
+import (
+	"context"
+	"fmt"
+	"os"
+
+	"github.com/google/generative-ai-go/genai"
+	"google.golang.org/api/option"
+)
+
+var geminiClient *genai.Client
+
+func init() {
+	apiKey := os.Getenv("GEMINI_API_KEY")
+	if apiKey == "" {
+		fmt.Println("WARNING: GEMINI_API_KEY environment variable not set")
+		return
+	}
+
+	var err error
+	geminiClient, err = genai.NewClient(context.Background(), option.WithAPIKey(apiKey))
+	if err != nil {
+		fmt.Printf("Failed to create Gemini client: %v\n", err)
+		return
+	}
+}
+
+func GetGeminiResponse(ctx context.Context, prompt string) (string, error) {
+	if geminiClient == nil {
+		return "", fmt.Errorf("Gemini client not initialized, please set GEMINI_API_KEY environment variable")
+	}
+
+	model := geminiClient.GenerativeModel("gemini-pro")
+	
+	model.SetTemperature(0.2)
+	model.SetTopP(0.8)
+	model.SetTopK(40)
+
+	resp, err := model.GenerateContent(ctx, genai.Text(prompt))
+	if err != nil {
+		return "", fmt.Errorf("failed to generate content: %v", err)
+	}
+
+	if len(resp.Candidates) == 0 || len(resp.Candidates[0].Content.Parts) == 0 {
+		return "", fmt.Errorf("no response generated")
+	}
+
+	return fmt.Sprintf("%v", resp.Candidates[0].Content.Parts[0]), nil
+}
