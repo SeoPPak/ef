@@ -31,7 +31,7 @@ func GetGeminiResponse(ctx context.Context, prompt string) (string, error) {
 		return "", fmt.Errorf("Gemini client not initialized, please set GEMINI_API_KEY environment variable")
 	}
 
-	model := geminiClient.GenerativeModel("gemini-pro")
+	model := geminiClient.GenerativeModel("gemini-2.0-flash")
 	
 	model.SetTemperature(0.2)
 	model.SetTopP(0.8)

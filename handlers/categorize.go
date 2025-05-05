@@ -1,15 +1,13 @@
 package handlers
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
 	"regexp"
-	"strings"
 
-	"github.com/gin-gonic/gin"
 	"ef/gemini"
+	"github.com/gin-gonic/gin"
 )
 
 type CategorizeRequest struct {
