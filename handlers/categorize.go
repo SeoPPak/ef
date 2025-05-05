@@ -9,7 +9,7 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
-	"github.com/google/generative-ai-go/gemini"
+	"ef/gemini"
 )
 
 type CategorizeRequest struct {

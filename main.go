@@ -4,7 +4,7 @@ import (
 	"log"
 
 	"github.com/gin-gonic/gin"
-	"github.com/seoppak/ef/handlers"
+	"ef/handlers"
 )
 
 func main() {
